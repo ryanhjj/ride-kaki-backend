@@ -25,9 +25,7 @@ func (t RideController) CreateTadaRide(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	c.JSON(http.StatusOK, data)
 }
 
 func (t RideController) CreateGoJekRide(c *gin.Context) {
@@ -46,7 +44,5 @@ func (t RideController) CreateGoJekRide(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	c.JSON(http.StatusOK, data)
 }

@@ -3,7 +3,9 @@ package services
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/mitchellh/mapstructure"
 	"net/http"
 	"os"
 	"ride-kaki-backend/models"
@@ -45,6 +47,15 @@ func CreateTadaRide(dataTada *models.Tada, c *gin.Context) (data interface{}, er
 	// parse the response
 	//var data interface{}
 	err = json.NewDecoder(resp.Body).Decode(&data)
+
+	var output models.TadaOutput
+	if err = mapstructure.Decode(data, &output); err != nil {
+		// handle error
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	price := output.Products[0].NetPrice
+	fmt.Println(price)
 
 	return data, err
 }
