@@ -46,3 +46,22 @@ func (t RideController) CreateGoJekRide(c *gin.Context) {
 
 	c.JSON(http.StatusOK, data)
 }
+
+func (t RideController) CreateRideKakiRide(c *gin.Context) {
+	dataGojek := new(models.Gojek)
+	err := c.BindJSON(dataGojek)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.HTTPError{http.StatusBadRequest, "Invalid Gojek Object" + err.Error()})
+		return
+	}
+
+	data, err := services.CreateGojekRide(dataGojek, c)
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, data)
+}

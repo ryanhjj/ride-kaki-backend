@@ -46,8 +46,15 @@ func CreateGojekRide(dataGojek *models.Gojek, c *gin.Context) (data interface{},
 		return
 	}
 	defer resp.Body.Close()
+	var output models.GojekOutput
+	err = json.NewDecoder(resp.Body).Decode(&output)
 
-	err = json.NewDecoder(resp.Body).Decode(&data)
+	gojekFourEconomySeaterPrice := output.Data.ServiceTypes[0].PaymentMethods[0].MinPriceWithoutVoucher
+	fmt.Println(gojekFourEconomySeaterPrice)
+	gojekSixEconomySeaterPrice := output.Data.ServiceTypes[1].PaymentMethods[0].MinPriceWithoutVoucher
+	fmt.Println(gojekSixEconomySeaterPrice)
+	gojekFourPremiumSeaterPrice := output.Data.ServiceTypes[4].PaymentMethods[0].MinPriceWithoutVoucher
+	fmt.Println(gojekFourPremiumSeaterPrice)
 
-	return data, err
+	return output, err
 }

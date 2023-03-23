@@ -1,6 +1,8 @@
 package models
 
-type T struct {
+import "time"
+
+type GojekOutput struct {
 	Data struct {
 		BaseToken              string      `json:"base_token"`
 		BusinessBooking        interface{} `json:"business_booking"`
@@ -41,7 +43,15 @@ type T struct {
 				PriceWithVoucher       int  `json:"price_with_voucher"`
 				PriceWithoutVoucher    int  `json:"price_without_voucher"`
 				Surge                  bool `json:"surge"`
-				PriceRange             struct {
+				Voucher                struct {
+					Amount     int       `json:"amount"`
+					Code       string    `json:"code"`
+					ExpiresAt  time.Time `json:"expires_at"`
+					Message    string    `json:"message"`
+					RewardType string    `json:"reward_type"`
+					Type       string    `json:"type"`
+				} `json:"voucher,omitempty"`
+				PriceRange struct {
 					SubtractWithVoucher    int `json:"subtract_with_voucher"`
 					SubtractWithoutVoucher int `json:"subtract_without_voucher"`
 				} `json:"price_range,omitempty"`

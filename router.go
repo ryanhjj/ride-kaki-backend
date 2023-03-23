@@ -17,5 +17,6 @@ func InitRoutes() {
 	// GET /users
 	r.POST("/ridekaki/v1/Tada", ride.CreateTadaRide)
 	r.POST("/ridekaki/v1/GoJek", ride.CreateGoJekRide)
+	r.POST("/ridekaki/v1/RideKaki", ride.CreateRideKakiRide)
 	r.Run(":" + PORT)
 }

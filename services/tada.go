@@ -54,8 +54,12 @@ func CreateTadaRide(dataTada *models.Tada, c *gin.Context) (data interface{}, er
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	price := output.Products[0].NetPrice
-	fmt.Println(price)
+	tadaFourEconomySeaterPrice := output.Products[0].NetPrice
+	fmt.Println(tadaFourEconomySeaterPrice)
+	tadaSixEconomySeaterPrice := output.Products[2].NetPrice
+	fmt.Println(tadaSixEconomySeaterPrice)
+	tadaFourPremiumSeaterPrice := output.Products[3].NetPrice
+	fmt.Println(tadaFourPremiumSeaterPrice)
 
 	return data, err
 }
