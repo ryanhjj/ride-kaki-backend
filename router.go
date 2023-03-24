@@ -14,9 +14,7 @@ func InitRoutes() {
 
 	ride := new(controllers.RideController)
 
-	// GET /users
-	r.POST("/ridekaki/v1/Tada", ride.CreateTadaRide)
-	r.POST("/ridekaki/v1/GoJek", ride.CreateGoJekRide)
+	// POST
 	r.POST("/ridekaki/v1/RideKaki", ride.CreateRideKakiRide)
 	r.Run(":" + PORT)
 }

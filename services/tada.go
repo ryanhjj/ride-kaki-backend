@@ -3,7 +3,6 @@ package services
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"net/http"
@@ -11,7 +10,7 @@ import (
 	"ride-kaki-backend/models"
 )
 
-func CreateTadaRide(dataTada *models.Tada, c *gin.Context) (data interface{}, err error) {
+func CreateTadaService(dataTada *models.Tada, c *gin.Context) (gojekFourEconomySeaterPrice float64, gojekSixEconomySeaterPrice float64, gojekFourPremiumSeaterPrice float64, err error) {
 	url := "https://backend.tada.global/ridesvc/v1/products/baseSearch"
 
 	// create the HTTP client
@@ -19,6 +18,7 @@ func CreateTadaRide(dataTada *models.Tada, c *gin.Context) (data interface{}, er
 
 	// create the request object
 	requestBodyBytes, err := json.Marshal(dataTada)
+
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -46,6 +46,7 @@ func CreateTadaRide(dataTada *models.Tada, c *gin.Context) (data interface{}, er
 
 	// parse the response
 	//var data interface{}
+	var data interface{}
 	err = json.NewDecoder(resp.Body).Decode(&data)
 
 	var output models.TadaOutput
@@ -55,11 +56,8 @@ func CreateTadaRide(dataTada *models.Tada, c *gin.Context) (data interface{}, er
 	}
 
 	tadaFourEconomySeaterPrice := output.Products[0].NetPrice
-	fmt.Println(tadaFourEconomySeaterPrice)
 	tadaSixEconomySeaterPrice := output.Products[2].NetPrice
-	fmt.Println(tadaSixEconomySeaterPrice)
 	tadaFourPremiumSeaterPrice := output.Products[3].NetPrice
-	fmt.Println(tadaFourPremiumSeaterPrice)
 
-	return data, err
+	return tadaFourEconomySeaterPrice, tadaSixEconomySeaterPrice, tadaFourPremiumSeaterPrice, err
 }

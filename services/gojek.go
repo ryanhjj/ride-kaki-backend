@@ -10,7 +10,7 @@ import (
 	"ride-kaki-backend/models"
 )
 
-func CreateGojekRide(dataGojek *models.Gojek, c *gin.Context) (data interface{}, err error) {
+func CreateGojekService(dataGojek *models.Gojek, c *gin.Context) (gojek4EconomyPrice float64, gojek6EconomyPrice float64, gojek4PremiumPrice float64, err error) {
 	// Get the query parameters from the request
 	sendPrioritisedOrder := dataGojek.SendPrioritisedOrder
 	serviceType := dataGojek.UserSelectedServiceType
@@ -49,12 +49,9 @@ func CreateGojekRide(dataGojek *models.Gojek, c *gin.Context) (data interface{},
 	var output models.GojekOutput
 	err = json.NewDecoder(resp.Body).Decode(&output)
 
-	gojekFourEconomySeaterPrice := output.Data.ServiceTypes[0].PaymentMethods[0].MinPriceWithoutVoucher
-	fmt.Println(gojekFourEconomySeaterPrice)
-	gojekSixEconomySeaterPrice := output.Data.ServiceTypes[1].PaymentMethods[0].MinPriceWithoutVoucher
-	fmt.Println(gojekSixEconomySeaterPrice)
-	gojekFourPremiumSeaterPrice := output.Data.ServiceTypes[4].PaymentMethods[0].MinPriceWithoutVoucher
-	fmt.Println(gojekFourPremiumSeaterPrice)
+	gojek4EconomyPrice = float64(output.Data.ServiceTypes[0].PaymentMethods[0].MinPriceWithoutVoucher) / 100
+	gojek6EconomyPrice = float64(output.Data.ServiceTypes[1].PaymentMethods[0].MinPriceWithoutVoucher) / 100
+	gojek4PremiumPrice = float64(output.Data.ServiceTypes[4].PaymentMethods[0].MinPriceWithoutVoucher) / 100
 
-	return output, err
+	return gojek4EconomyPrice, gojek6EconomyPrice, gojek4PremiumPrice, err
 }
