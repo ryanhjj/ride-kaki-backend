@@ -10,7 +10,7 @@ import (
 	"ride-kaki-backend/models"
 )
 
-func CreateTadaService(dataTada *models.Tada, c *gin.Context) (gojekFourEconomySeaterPrice float64, gojekSixEconomySeaterPrice float64, gojekFourPremiumSeaterPrice float64, err error) {
+func CreateTadaService(dataTada *models.Tada, c *gin.Context) (tada4EconomyPrice float64, tada6EconomyPrice float64, tada4PremiumPrice float64, err error) {
 	url := "https://backend.tada.global/ridesvc/v1/products/baseSearch"
 
 	// create the HTTP client
@@ -55,9 +55,9 @@ func CreateTadaService(dataTada *models.Tada, c *gin.Context) (gojekFourEconomyS
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	tadaFourEconomySeaterPrice := output.Products[0].NetPrice
-	tadaSixEconomySeaterPrice := output.Products[2].NetPrice
-	tadaFourPremiumSeaterPrice := output.Products[3].NetPrice
+	tada4EconomyPrice = output.Products[0].NetPrice
+	tada6EconomyPrice = output.Products[2].NetPrice
+	tada4PremiumPrice = output.Products[4].NetPrice
 
-	return tadaFourEconomySeaterPrice, tadaSixEconomySeaterPrice, tadaFourPremiumSeaterPrice, err
+	return tada4EconomyPrice, tada6EconomyPrice, tada4PremiumPrice, err
 }
