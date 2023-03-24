@@ -32,12 +32,18 @@ func (t RideController) CreateRideKakiRide(c *gin.Context) {
 	gojek.EndingLatitude = endingLatitude
 	gojek.EndingLongitude = endingLongitude
 
-	gojek4EconomyPrice, gojek6EconomyPrice, gojek4PremiumPrice, err := services.CreateGojekService(gojek, c)
+	// Launch a new goroutine for CreateGojekService
+	gojekChan := make(chan [3]float64)
+	go func() {
+		gojek4EconomyPrice, gojek6EconomyPrice, gojek4PremiumPrice, err := services.CreateGojekService(gojek, c)
 
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		gojekChan <- [3]float64{gojek4EconomyPrice, gojek6EconomyPrice, gojek4PremiumPrice}
+	}()
 
 	tada := new(models.Tada)
 	tada.IsStudentFleet = false
@@ -53,20 +59,30 @@ func (t RideController) CreateRideKakiRide(c *gin.Context) {
 	locations = append(locations, *endingLocation)
 	tada.Locations = locations
 
-	tada4EconomyPrice, tada6EconomyPrice, tada4PremiumPrice, err := services.CreateTadaService(tada, c)
+	// Launch a new goroutine for CreateTadaService
+	tadaChan := make(chan [3]float64)
+	go func() {
+		tada4EconomyPrice, tada6EconomyPrice, tada4PremiumPrice, err := services.CreateTadaService(tada, c)
 
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		tadaChan <- [3]float64{tada4EconomyPrice, tada6EconomyPrice, tada4PremiumPrice}
+	}()
+
+	// Wait for both goroutines to complete and retrieve their results
+	gojekPrices := <-gojekChan
+	tadaPrices := <-tadaChan
 
 	rideKakiOutput := new(models.RideKakiOutput)
-	rideKakiOutput.Gojek4EconomyPrice = gojek4EconomyPrice
-	rideKakiOutput.Gojek6EconomyPrice = gojek6EconomyPrice
-	rideKakiOutput.Gojek4PremiumPrice = gojek4PremiumPrice
-	rideKakiOutput.Tada4EconomyPrice = tada4EconomyPrice
-	rideKakiOutput.Tada6EconomyPrice = tada6EconomyPrice
-	rideKakiOutput.Tada4PremiumPrice = tada4PremiumPrice
+	rideKakiOutput.Gojek4EconomyPrice = gojekPrices[0]
+	rideKakiOutput.Gojek6EconomyPrice = gojekPrices[1]
+	rideKakiOutput.Gojek4PremiumPrice = gojekPrices[2]
+	rideKakiOutput.Tada4EconomyPrice = tadaPrices[0]
+	rideKakiOutput.Tada6EconomyPrice = tadaPrices[1]
+	rideKakiOutput.Tada4PremiumPrice = tadaPrices[2]
 
 	c.JSON(http.StatusOK, rideKakiOutput)
 }
